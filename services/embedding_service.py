@@ -1,3 +1,4 @@
+
 from functools import lru_cache
 
 import numpy as np
@@ -11,7 +12,11 @@ EMBEDDING_DIMENSION = 384
 def get_embedding_model():
     """Load the embedding model once and reuse it."""
     from sentence_transformers import SentenceTransformer
-    return SentenceTransformer(MODEL_NAME)
+
+    model = SentenceTransformer(MODEL_NAME)
+    model.max_seq_length = 256
+
+    return model
 
 
 def generate_embedding(text):
@@ -48,6 +53,7 @@ def generate_embeddings(texts):
 
     vectors = model.encode(
         texts,
+        batch_size=2,
         normalize_embeddings=True,
         convert_to_numpy=True,
         show_progress_bar=False,
