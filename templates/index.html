@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0d12">
+    <title>Neural Nexus — AI Knowledge Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="/" aria-label="Neural Nexus home">
+                <div class="brand-icon">N</div>
+                <div>
+                    <h1>Neural Nexus</h1>
+                    <p>Your personal AI workspace</p>
+                </div>
+            </a>
+
+            <button id="new-chat-btn" class="new-chat-btn" type="button">
+                <span>＋</span> New conversation
+            </button>
+
+            <div class="sidebar-section">
+                <div class="section-heading">YOUR CONVERSATIONS</div>
+                <div id="session-list" class="session-list">
+                    <p class="muted">Sign in to view conversations.</p>
+                </div>
+            </div>
+
+            <div class="sidebar-section documents-section">
+                <div class="section-heading">YOUR KNOWLEDGE BASE</div>
+                <div id="document-list" class="document-list">
+                    <p class="muted">Your uploaded files will appear here.</p>
+                </div>
+                <label for="sidebar-file-input" class="upload-sidebar-btn">
+                    <span>＋</span> Add a document
+                </label>
+                <input id="sidebar-file-input" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="user-avatar">U</div>
+                <div class="user-details">
+                    <span id="user-label">Not signed in</span>
+                    <small id="user-subtitle">Personal workspace</small>
+                </div>
+                <button id="logout-btn" class="icon-button hidden" type="button" title="Sign out" aria-label="Sign out">
+                    ↪
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <p class="eyebrow">YOUR PRIVATE KNOWLEDGE SPACE</p>
+                    <h2 id="page-title">Ask your documents anything.</h2>
+                </div>
+
+                <div class="topbar-actions">
+                    <span class="status-pill">
+                        <span class="status-dot"></span> AI assistant
+                    </span>
+                    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch theme"
+                        title="Switch light/dark theme">
+                        <span id="theme-icon">☀</span>
+                        <span id="theme-label">Light mode</span>
+                    </button>
+                </div>
+            </header>
+
+            <section id="login-panel" class="auth-panel hidden">
+                <div class="auth-card">
+                    <div class="brand-icon auth-logo">N</div>
+
+                    <div id="login-view">
+                        <p class="eyebrow">WELCOME BACK</p>
+                        <h2>Sign in to your workspace</h2>
+                        <p class="auth-description">
+                            Continue exploring your documents and saved conversations.
+                        </p>
+
+                        <form id="login-form">
+                            <label for="identifier">Username or email</label>
+                            <input id="identifier" name="identifier" autocomplete="username" required
+                                placeholder="Enter username or email">
+
+                            <label for="password">Password</label>
+                            <input id="password" name="password" type="password" autocomplete="current-password"
+                                required placeholder="Enter your password">
+
+                            <button type="submit" class="primary-btn">
+                                Sign in <span>→</span>
+                            </button>
+                            <p id="login-error" class="error-text" role="alert"></p>
+                        </form>
+
+                        <p class="auth-switch">
+                            New to Neural Nexus?
+                            <button type="button" id="show-register" class="link-button">Create account</button>
+                        </p>
+                    </div>
+
+                    <div id="register-view" class="hidden">
+                        <p class="eyebrow">START YOUR JOURNEY</p>
+                        <h2>Create your account</h2>
+                        <p class="auth-description">
+                            Build a private knowledge space for your documents.
+                        </p>
+
+                        <form id="register-form">
+                            <label for="register-username">Username</label>
+                            <input id="register-username" name="username" autocomplete="username" minlength="3"
+                                maxlength="50" required placeholder="Choose a username">
+
+                            <label for="register-email">Email address</label>
+                            <input id="register-email" name="email" type="email" autocomplete="email" required
+                                placeholder="you@example.com">
+
+                            <label for="register-password">Password</label>
+                            <input id="register-password" name="password" type="password" autocomplete="new-password"
+                                minlength="8" required placeholder="At least 8 characters">
+
+                            <button type="submit" class="primary-btn">
+                                Create account <span>→</span>
+                            </button>
+                            <p id="register-error" class="error-text" role="alert"></p>
+                        </form>
+
+                        <p class="auth-switch">
+                            Already have an account?
+                            <button type="button" id="show-login" class="link-button">Sign in</button>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="chat-panel" class="chat-panel hidden">
+                <div id="welcome-panel" class="welcome-panel">
+                    <div class="welcome-icon">✳</div>
+                    <p class="eyebrow">YOUR AI KNOWLEDGE PARTNER</p>
+                    <h2>Good questions lead<br>to better answers.</h2>
+                    <p class="welcome-description">
+                        Chat naturally, explore your documents, and find the
+                        information you need. Your conversations are saved
+                        to your account.
+                    </p>
+
+                    <div class="suggestions">
+                        <button class="suggestion" type="button" data-prompt="Summarize my uploaded document.">
+                            <span class="suggestion-number">01</span>
+                            <span>
+                                <strong>Summarize a document</strong>
+                                <small>Get the important points quickly</small>
+                            </span>
+                            <span class="suggestion-arrow">↗</span>
+                        </button>
+
+                        <button class="suggestion" type="button"
+                            data-prompt="What are the most important facts in my documents?">
+                            <span class="suggestion-number">02</span>
+                            <span>
+                                <strong>Find important facts</strong>
+                                <small>Explore information in your files</small>
+                            </span>
+                            <span class="suggestion-arrow">↗</span>
+                        </button>
+
+                        <button class="suggestion" type="button"
+                            data-prompt="Explain a complex topic in simple language.">
+                            <span class="suggestion-number">03</span>
+                            <span>
+                                <strong>Learn something new</strong>
+                                <small>Ask a question in natural language</small>
+                            </span>
+                            <span class="suggestion-arrow">↗</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="messages" class="messages hidden" aria-live="polite"></div>
+
+                <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+                <div class="composer-area">
+                    <div id="selected-file" class="selected-file hidden"></div>
+
+                    <form id="chat-form" class="composer">
+                        <textarea id="message-input" rows="1" maxlength="5000" placeholder="Message Neural Nexus..."
+                            aria-label="Your message"></textarea>
+
+                        <div class="composer-footer">
+                            <div class="composer-tools">
+                                <label for="composer-file-input" class="tool-button">
+                                    ＋ Upload file
+                                </label>
+                                <input id="composer-file-input" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden>
+
+                                <span class="tool-divider"></span>
+
+                                <label for="document-select" class="visually-hidden">
+                                    Choose a document
+                                </label>
+                                <select id="document-select" class="document-select"
+                                    title="Choose a document to ask about">
+                                    <option value="">All documents</option>
+                                </select>
+                            </div>
+
+                            <button id="send-btn" class="send-btn" type="submit">
+                                Send <span>↑</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <p class="disclaimer">
+                        AI can make mistakes. Verify important answers against
+                        your original documents.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+</body>
+
+</html>
