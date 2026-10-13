@@ -16,7 +16,10 @@ def test_validate_supported_files():
 
 
 def test_reject_unsupported_extension():
-    with pytest.raises(ValueError, match="Only PDF and TXT"):
+    with pytest.raises(
+        ValueError,
+        match="Only PDF, DOCX, and TXT files are supported",
+    ):
         validate_document("script.exe")
 
 

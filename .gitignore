@@ -40,3 +40,5 @@ vector_store/*
 # Operating system files
 .DS_Store
 Thumbs.db
+.neon
+node_modules/

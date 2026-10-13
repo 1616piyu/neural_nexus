@@ -18,10 +18,18 @@ class Config:
     DEBUG = os.getenv("FLASK_DEBUG", "false").strip().lower() == "true"
     HOST = os.getenv("FLASK_HOST", "127.0.0.1")
     PORT = int(os.getenv("FLASK_PORT", "5000"))
+    DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+    DATABASE_BACKEND = os.getenv("DATABASE_BACKEND", "sqlite").strip().lower()
 
     DATABASE_PATH = Path(
         os.getenv("DATABASE_PATH", "data/neural_nexus.db")
     )
+    UPLOAD_FOLDER = Path(
+        os.getenv(
+            "UPLOAD_FOLDER",
+            str(BASE_DIR / "uploads"),
+        )
+    ).resolve()
 
     # Resolve relative database paths from the project root.
     if not DATABASE_PATH.is_absolute():
